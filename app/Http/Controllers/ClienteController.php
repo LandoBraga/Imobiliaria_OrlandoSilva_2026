@@ -75,8 +75,15 @@ class ClienteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy($id)
+{
+    // 1. Localiza o cliente pelo ID na base de dados
+    $cliente = \App\Models\Cliente::findOrFail($id);
+
+    // 2. Apaga o registo do cliente
+    $cliente->delete();
+
+    // 3. Redireciona de volta para a lista com um alerta verde de sucesso
+    return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso!');
+}
 }
