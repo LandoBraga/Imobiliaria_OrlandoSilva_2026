@@ -10,9 +10,13 @@ class ApartamentoController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
+{
+    // Vai buscar todos os apartamentos à base de dados
+    $apartamentos = \App\Models\Apartamento::all();
+
+    // Envia os dados para a view de listagem
+    return view('apartamentos.index', compact('apartamentos'));
+}
 
     /**
      * Show the form for creating a new resource.
