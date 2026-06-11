@@ -2,63 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Venda;
+use App\Models\Cliente;
+use App\Models\Apartamento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VendaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // 1. Listar todas as vendas
     public function index()
     {
-        //
+        $vendas = Venda::with(['cliente', 'apartamento'])->get();
+        return view('vendas.index', compact('vendas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // 2. Mostrar o formulário de registo
     public function create()
     {
-        //
+        $clientes = Cliente::all();
+        $apartamentos = Apartamento::where('estado', 'Disponível')->get();
+        
+        return view('vendas.create', compact('clientes', 'apartamentos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // 3. Gravar a venda na Base de Dados
     public function store(Request $request)
     {
-        //
-    }
+        // Validação dos campos vindos do formulário
+        $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'apartamento_id' => 'required|exists:apartamentos,id',
+            'data_venda' => 'required|date',
+            'valor_venda' => 'required|numeric|min:0',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Executa a gravação e a alteração de estado em segurança
+        DB::transaction(function () use ($request) {
+            Venda::create([
+                'cliente_id'     => $request->cliente_id,
+                'apartamento_id' => $request->apartamento_id,
+                'data_venda'     => $request->data_venda,
+                'valor_venda'    => $request->valor_venda,
+            ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+            $apartamento = Apartamento::find($request->apartamento_id);
+            $apartamento->update(['estado' => 'Vendido']);
+        });
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // Força o redirecionamento explícito para a lista de histórico
+        return redirect()->to('/vendas')->with('success', 'Venda registada com sucesso!');
     }
 }
