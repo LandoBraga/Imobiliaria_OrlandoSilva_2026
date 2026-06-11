@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('apartamentos', function (Blueprint $table) {
-            $table->id(); // ID automático 
-            $table->string('referencia')->unique(); // Referência única para pesquisa [cite: 17, 19]
-            $table->string('tipologia'); // Ex: T0, T1, T2, T3 
-            $table->string('morada'); // Morada do imóvel 
-            $table->integer('area'); // Área em m² (número inteiro) 
-            $table->decimal('preco', 12, 2); // Preço (ex: 250000.00) 
-            $table->string('fotografia')->nullable(); // Caminho da foto no storage (opcional no início) [cite: 17, 55]
-            $table->string('estado')->default('Disponível'); // Estado padrão: Disponível ou Vendido 
-            $table->timestamps(); // Registos de criação e atualização automáticos
+            $table->id();
+            $table->string('referencia')->unique();
+            $table->string('tipologia');
+            $table->string('morada');
+            $table->integer('area');
+            $table->decimal('preco', 10, 2);
+            $table->string('estado')->default('Disponível');
+            $table->string('imagem_url')->nullable(); // Coluna das fotos alinhada aqui
+            $table->timestamps();
         });
     }
 
