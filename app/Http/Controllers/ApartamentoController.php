@@ -3,19 +3,48 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Apartamento;
 
 class ApartamentoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
 {
-    // Vai buscar todos os apartamentos à base de dados
-    $apartamentos = \App\Models\Apartamento::all();
+    // Captura os valores que o utilizador vai digitar ou clicar no ecrã
+    $pesquisa  = $request->input('search');
+    $tipologia = $request->input('tipologia');
+    $ordenar   = $request->input('order_by', 'id'); // Se não escolher, ordena por ID
+    $direcao   = $request->input('direction', 'asc'); // Direção padrão: Crescente
 
-    // Envia os dados para a view de listagem
-    return view('apartamentos.index', compact('apartamentos'));
+    // Inicia a query na tabela de apartamentos
+    $query = Apartamento::query();
+
+    // Filtro 1: Barra de Pesquisa (pesquisa por Referência ou Morada)
+    if ($pesquisa) {
+        $query->where(function($q) use ($pesquisa) {
+            $q->where('referencia', 'like', "%{$pesquisa}%")
+              ->orWhere('morada', 'like', "%{$pesquisa}%");
+        });
+    }
+
+    // Filtro 2: Seleção de Tipologia (T0, T1, T2...)
+    if ($tipologia) {
+        $query->where('tipologia', $tipologia);
+    }
+
+    // Ordenação dinâmica e segura (evita SQL Injection limitando as colunas permitidas)
+    $colunasPermitidas = ['id', 'tipologia', 'area', 'preco'];
+    if (in_array($ordenar, $colunasPermitidas)) {
+        $query->orderBy($ordenar, $direcao);
+    }
+
+    // Executa a query final
+    $apartamentos = $query->get();
+
+    // Devolve os dados para a view, mantendo os filtros ativos no ecrã
+    return view('apartamentos.index', compact('apartamentos', 'pesquisa', 'tipologia', 'ordenar', 'direcao'));
 }
 
     /**

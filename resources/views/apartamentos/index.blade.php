@@ -19,65 +19,96 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 font-bold tracking-wider">
-                        <tr>
-                            <th class="px-4 py-3 w-20 text-center">Visual</th>
-                            <th class="px-4 py-3">Referência</th>
-                            <th class="px-4 py-3">Tipologia</th>
-                            <th class="px-4 py-3">Localização (Morada)</th>
-                            <th class="px-4 py-3 text-right">Área</th>
-                            <th class="px-4 py-3 text-right">Preço Base</th>
-                            <th class="px-4 py-3 text-center">Estado</th>
+            <div class="bg-gray-800 p-4 rounded-lg mb-6 shadow-md border border-gray-700">
+                <form action="{{ route('apartamentos.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
+                    
+                    <div class="flex-1 w-full">
+                        <label class="block text-gray-400 text-sm font-medium mb-1">Pesquisar Imóvel</label>
+                        <input type="text" name="search" value="{{ $pesquisa ?? '' }}" 
+                               placeholder="Referência ou localização..." 
+                               class="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 text-sm">
+                    </div>
+
+                    <div class="w-full md:w-48">
+                        <label class="block text-gray-400 text-sm font-medium mb-1">Tipologia</label>
+                        <select name="tipologia" class="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                            <option value="">Todas</option>
+                            @foreach(['T0', 'T1', 'T2', 'T3', 'T4'] as $tipo)
+                                <option value="{{ $tipo }}" {{ (isset($tipologia) && $tipologia == $tipo) ? 'selected' : '' }}>{{ $tipo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="w-full md:w-48">
+                        <label class="block text-gray-400 text-sm font-medium mb-1">Ordenar Por</label>
+                        <select name="order_by" class="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                            <option value="id" {{ (isset($ordenar) && $ordenar == 'id') ? 'selected' : '' }}>ID do Imóvel</option>
+                            <option value="preco" {{ (isset($ordenar) && $ordenar == 'preco') ? 'selected' : '' }}>Preço Base</option>
+                            <option value="area" {{ (isset($ordenar) && $ordenar == 'area') ? 'selected' : '' }}>Área útil</option>
+                            <option value="tipologia" {{ (isset($ordenar) && $ordenar == 'tipologia') ? 'selected' : '' }}>Tipologia</option>
+                        </select>
+                    </div>
+
+                    <div class="w-full md:w-40">
+                        <label class="block text-gray-400 text-sm font-medium mb-1">Direção</label>
+                        <select name="direction" class="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-red-500 text-sm">
+                            <option value="asc" {{ (isset($direcao) && $direcao == 'asc') ? 'selected' : '' }}>Crescente ↑</option>
+                            <option value="desc" {{ (isset($direcao) && $direcao == 'desc') ? 'selected' : '' }}>Decrescente ↓</option>
+                        </select>
+                    </div>
+
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button type="submit" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded text-sm transition duration-150">
+                            Filtrar
+                        </button>
+                        <a href="{{ route('apartamentos.index') }}" class="w-full md:w-auto text-center bg-gray-600 hover:bg-gray-700 text-white font-medium px-4 py-2 rounded text-sm transition duration-150">
+                            Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
+                <table class="w-full text-left border-collapse text-white text-sm">
+                    <thead>
+                        <tr class="bg-gray-900 text-gray-400 uppercase text-xs font-semibold tracking-wider border-b border-gray-700">
+                            <th class="p-4">Visual</th>
+                            <th class="p-4">Referência</th>
+                            <th class="p-4">Tipologia</th>
+                            <th class="p-4">Localização (Morada)</th>
+                            <th class="p-4">Área</th>
+                            <th class="p-4">Preço Base</th>
+                            <th class="p-4">Estado</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody class="divide-y divide-gray-700">
                         @forelse($apartamentos as $apartamento)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                                <td class="px-4 py-3 text-center align-middle">
-                                    <img src="{{ $apartamento->imagem_url ?? 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=150&auto=format&fit=crop&q=60' }}" 
-                                         alt="Foto do imóvel {{ $apartamento->referencia }}" 
-                                         class="w-14 h-14 rounded-md object-cover border border-gray-200 dark:border-gray-600 shadow-md mx-auto">
+                            <tr class="hover:bg-gray-750 transition duration-150">
+                                <td class="p-4">
+                                    <img src="{{ $apartamento->imagem_url ?? 'https://placehold.co/50x50?text=Casa' }}" class="w-10 h-10 object-cover rounded shadow border border-gray-600" alt="Foto">
                                 </td>
-                                
-                                <td class="px-4 py-3 font-black text-gray-900 dark:text-white uppercase tracking-tight align-middle">
-                                    {{ $apartamento->referencia }}
-                                </td>
-                                <td class="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 align-middle">
-                                    {{ $apartamento->tipologia }}
-                                </td>
-                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400 align-middle">
-                                    {{ $apartamento->morada }}
-                                </td>
-                                <td class="px-4 py-3 text-right font-medium text-gray-900 dark:text-white align-middle">
-                                    {{ $apartamento->area }} m²
-                                </td>
-                                <td class="px-4 py-3 text-right font-bold text-gray-900 dark:text-white align-middle">
-                                    € {{ number_format($apartamento->preco, 2, ',', '.') }}
-                                </td>
-                                <td class="px-4 py-3 text-center align-middle">
-                                    @if($apartamento->estado === 'Disponível')
-                                        <span class="px-2.5 py-1 text-xs font-black uppercase tracking-wider bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded">
-                                            Disponível
-                                        </span>
-                                    @else
-                                        <span class="px-2.5 py-1 text-xs font-black uppercase tracking-wider bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded">
-                                            Vendido
-                                        </span>
-                                    @endif
+                                <td class="p-4 font-bold text-red-400">{{ $apartamento->referencia }}</td>
+                                <td class="p-4">{{ $apartamento->tipologia }}</td>
+                                <td class="p-4 text-gray-300">{{ $apartamento->morada }}</td>
+                                <td class="p-4 font-semibold">{{ $apartamento->area }} m²</td>
+                                <td class="p-4 font-bold text-gray-200">€ {{ number_format($apartamento->preco, 2, ',', '.') }}</td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 text-xs font-extrabold rounded {{ $apartamento->estado == 'Disponível' ? 'bg-green-900 text-green-300 border border-green-600' : 'bg-red-900 text-red-300 border border-red-600' }}">
+                                        {{ strtoupper($apartamento->estado) }}
+                                    </span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center p-8 text-gray-500 dark:text-gray-400 font-medium">
-                                    Nenhum imóvel disponível ou registado na carteira ativa.
+                                <td colspan="7" class="p-8 text-center text-gray-400 bg-gray-800">
+                                    Nenhum apartamento encontrado com os filtros selecionados.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </x-app-layout>
