@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class VendaController extends Controller
 {
-    // 1. Listar todas as vendas
+    // 1. Listar todas as vendas (Histórico Comercial)
     public function index()
     {
         $vendas = Venda::with(['cliente', 'apartamento'])->get();
@@ -29,12 +29,13 @@ class VendaController extends Controller
     // 3. Gravar a venda na Base de Dados
     public function store(Request $request)
     {
-        // Validação dos campos vindos do formulário
+        // Validação robusta dos campos vindos do formulário
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'apartamento_id' => 'required|exists:apartamentos,id',
+            'apartamento_id' => 'required|exists:apartamentos,id,estado,Disponível',
             'data_venda' => 'required|date',
             'valor_venda' => 'required|numeric|min:0',
+            'observacoes' => 'nullable|string',
         ]);
 
         // Executa a gravação e a alteração de estado em segurança
@@ -44,13 +45,14 @@ class VendaController extends Controller
                 'apartamento_id' => $request->apartamento_id,
                 'data_venda'     => $request->data_venda,
                 'valor_venda'    => $request->valor_venda,
+                'observacoes'    => $request->observacoes,
             ]);
 
             $apartamento = Apartamento::find($request->apartamento_id);
             $apartamento->update(['estado' => 'Vendido']);
         });
 
-        // Força o redirecionamento explícito para a lista de histórico
-        return redirect()->to('/vendas')->with('success', 'Venda registada com sucesso!');
+        // Força o redirecionamento explícito para a lista de histórico com mensagem de sucesso
+        return redirect()->route('vendas.index')->with('success', 'Venda registada com sucesso! O estado do apartamento foi alterado para Vendido.');
     }
 }
