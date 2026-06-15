@@ -3,21 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Cliente;
+use App\Models\Apartamento;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // Executa os seeders que criámos para preencher a base de dados
-        $this->call([
-            ClienteSeeder::class,
-            ApartamentoSeeder::class,
-        ]);
+        // Cria 15 clientes fictícios na base de dados
+        Cliente::factory(15)->create();
+
+        // Cria 20 apartamentos fictícios na base de dados
+        Apartamento::factory(20)->create();
     }
 }
