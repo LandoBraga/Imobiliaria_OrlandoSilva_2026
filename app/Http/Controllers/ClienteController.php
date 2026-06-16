@@ -71,18 +71,30 @@ class ClienteController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    // Mostrar o formulário com os dados do cliente para editar
+public function edit(Cliente $cliente)
+{
+    return view('clientes.edit', compact('cliente'));
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+// Gravar as alterações feitas no formulário na Base de Dados
+public function update(\Illuminate\Http\Request $request, Cliente $cliente)
+{
+    // Validação dos dados (garante que o NIF único ignora o ID do próprio cliente atual)
+    $request->validate([
+        'nome'     => 'required|string|max:255',
+        'email'    => 'required|email|max:255|unique:clientes,email,' . $cliente->id,
+        'telefone' => 'required|string|max:20',
+        'nif'      => 'required|digits:9|unique:clientes,nif,' . $cliente->id,
+        'morada'   => 'required|string|max:255',
+    ]);
+
+    // Atualiza os dados na base de dados
+    $cliente->update($request->all());
+
+    // Redireciona de volta para a lista com mensagem de sucesso
+    return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+}
 
     /**
      * Remove the specified resource from storage.

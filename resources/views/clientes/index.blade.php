@@ -62,15 +62,23 @@
                                 <td class="p-4 font-mono font-semibold text-gray-200">{{ $cliente->nif }}</td>
                                 <td class="p-4 text-gray-400">{{ $cliente->morada }}</td>
                                 <td class="p-4 text-center">
-                                    <!-- Formulário de Eliminação Seguro com Confirmação -->
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" 
-                                          onsubmit="return confirm('Tem a certeza absoluta que deseja eliminar este cliente? Esta ação não pode ser desfeita.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wider transition duration-150">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-center gap-4">
+                                        <!-- Botão Editar -->
+                                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="text-blue-500 hover:text-blue-400 font-bold uppercase text-xs tracking-wider transition duration-150">
+                                            Editar
+                                        </a>
+
+                                        <!-- Formulário Eliminar Seguro -->
+                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" 
+                                              onsubmit="return confirm('Tem a certeza absoluta que deseja eliminar este cliente? Esta ação não pode ser desfeita.');"
+                                              class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wider transition duration-150">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
