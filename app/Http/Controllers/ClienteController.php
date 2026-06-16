@@ -9,13 +9,25 @@ class ClienteController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index()
+   public function index(\Illuminate\Http\Request $request)
 {
-    // Procura todos os clientes na base de dados
-    $clientes = \App\Models\Cliente::all();
+    // Captura o termo de pesquisa digitado pelo utilizador
+    $pesquisa = $request->input('search');
 
-    // Carrega a página index e envia a lista de clientes para lá
-    return view('clientes.index', compact('clientes'));
+    // Inicia a query na tabela de clientes
+    $query = \App\Models\Cliente::query();
+
+    // Se houver pesquisa, filtra por Nome ou por NIF
+    if ($pesquisa) {
+        $query->where('nome', 'like', "%{$pesquisa}%")
+              ->orWhere('nif', 'like', "%{$pesquisa}%");
+    }
+
+    // Ordena por ordem alfabética de nome
+    $clientes = $query->orderBy('nome', 'asc')->get();
+
+    // Envia os dados para a view mantendo a variável de pesquisa ativa
+    return view('clientes.index', compact('clientes', 'pesquisa'));
 }
 
     /**

@@ -13,57 +13,61 @@
     <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
+            <!-- Mensagens de Sucesso (Alertas) -->
             @if(session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 shadow-sm">
                     {{ session('success') }}
                 </div>
             @endif
 
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 shadow-sm flex items-center">
-                    <span class="mr-3 text-xl">⚠️</span>
-                    <div>
-                        <strong class="font-black uppercase text-xs tracking-wider block">Operação Recusada</strong>
-                        <span class="text-sm font-medium">{{ session('error') }}</span>
+            <!-- Bloco de Pesquisa de Clientes -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-6 shadow-md border border-gray-700">
+                <form action="{{ route('clientes.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
+                    <div class="flex-1 w-full">
+                        <label class="block text-gray-400 text-sm font-medium mb-1">Pesquisar Cliente</label>
+                        <input type="text" name="search" value="{{ $pesquisa ?? '' }}" 
+                               placeholder="Pesquise por nome ou NIF do cliente..." 
+                               class="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 text-sm">
                     </div>
-                </div>
-            @endif
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button type="submit" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded text-sm transition duration-150">
+                            Filtrar
+                        </button>
+                        <a href="{{ route('clientes.index') }}" class="w-full md:w-auto text-center bg-gray-600 hover:bg-gray-700 text-white font-medium px-4 py-2 rounded text-sm transition duration-150">
+                            Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 font-bold tracking-wider">
-                        <tr>
-                            <th class="px-4 py-3">Nome do Cliente</th>
-                            <th class="px-4 py-3">Email</th>
-                            <th class="px-4 py-3">Telefone</th>
-                            <th class="px-4 py-3">NIF</th>
-                            <th class="px-4 py-3">Localização (Morada)</th>
-                            <th class="px-4 py-3 text-center">Ações</th>
+            <!-- Tabela de Listagem de Clientes -->
+            <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
+                <table class="w-full text-left border-collapse text-white text-sm">
+                    <thead>
+                        <tr class="bg-gray-900 text-gray-400 uppercase text-xs font-semibold tracking-wider border-b border-gray-700">
+                            <th class="p-4">Nome do Cliente</th>
+                            <th class="p-4">Email</th>
+                            <th class="p-4">Telefone</th>
+                            <th class="p-4">NIF</th>
+                            <th class="p-4">Localização (Morada)</th>
+                            <th class="p-4 text-center">Ações</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody class="divide-y divide-gray-700">
                         @forelse($clientes as $cliente)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                                <td class="px-4 py-3 font-black text-gray-900 dark:text-white uppercase tracking-tight align-middle">
-                                    {{ $cliente->nome }}
-                                </td>
-                                <td class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 align-middle">
-                                    {{ $cliente->email }}
-                                </td>
-                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400 align-middle">
-                                    {{ $cliente->telefone ?? '---' }}
-                                </td>
-                                <td class="px-4 py-3 font-mono text-gray-700 dark:text-gray-300 align-middle">
-                                    {{ $cliente->nif }}
-                                </td>
-                                <td class="px-4 py-3 text-gray-600 dark:text-gray-400 align-middle">
-                                    {{ $cliente->morada }}
-                                </td>
-                                <td class="px-4 py-3 text-center align-middle">
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('Tem a certeza que deseja remover este cliente?');">
+                            <tr class="hover:bg-gray-750 transition duration-150">
+                                <td class="p-4 font-bold text-gray-100 uppercase">{{ $cliente->nome }}</td>
+                                <td class="p-4 text-gray-300">{{ $cliente->email }}</td>
+                                <td class="p-4 text-gray-300">{{ $cliente->telefone }}</td>
+                                <td class="p-4 font-mono font-semibold text-gray-200">{{ $cliente->nif }}</td>
+                                <td class="p-4 text-gray-400">{{ $cliente->morada }}</td>
+                                <td class="p-4 text-center">
+                                    <!-- Formulário de Eliminação Seguro com Confirmação -->
+                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" 
+                                          onsubmit="return confirm('Tem a certeza absoluta que deseja eliminar este cliente? Esta ação não pode ser desfeita.');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 font-bold text-xs uppercase tracking-wider transition duration-150">
+                                        <button type="submit" class="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wider transition duration-150">
                                             Eliminar
                                         </button>
                                     </form>
@@ -71,14 +75,15 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center p-8 text-gray-500 dark:text-gray-400 font-medium">
-                                    Nenhum cliente registado na base de dados.
+                                <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
+                                    Nenhum cliente encontrado com os filtros selecionados.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </x-app-layout>
