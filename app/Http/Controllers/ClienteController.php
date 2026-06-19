@@ -14,14 +14,26 @@ class ClienteController extends Controller
     {
         // Captura o termo de pesquisa digitado pelo utilizador
         $pesquisa = $request->input('search');
+        
+        // NOVO: Captura o filtro vindo do Dashboard ou dos cartões internos
+        $filtro = $request->input('filtro');
 
         // Inicia a query na tabela de clientes
         $query = Cliente::query();
 
         // Se houver pesquisa, filtra por Nome ou por NIF
         if ($pesquisa) {
-            $query->where('nome', 'like', "%{$pesquisa}%")
-                ->orWhere('nif', 'like', "%{$pesquisa}%");
+            $query->where(function($q) use ($pesquisa) {
+                $q->where('nome', 'like', "%{$pesquisa}%")
+                  ->orWhere('nif', 'like', "%{$pesquisa}%");
+            });
+        }
+
+        // NOVO: Aplica o filtro dinâmico de clientes ativos/inativos
+        if ($filtro === 'ativos') {
+            $query->has('vendas');
+        } elseif ($filtro === 'inativos') {
+            $query->doesntHave('vendas');
         }
 
         // Ordena por ordem alfabética de nome
@@ -32,15 +44,16 @@ class ClienteController extends Controller
         $clientesComCompras = Cliente::has('vendas')->count();
         $clientesSemCompras = Cliente::doesntHave('vendas')->count();
 
-        // Envia os dados e os contadores para a view
+        // Envia os dados, os contadores e o filtro atual para a view
         return view('clientes.index', compact(
             'clientes',
             'pesquisa',
+            'filtro',
             'totalClientes',
             'clientesComCompras',
             'clientesSemCompras'
         ));
-    } // <--- Fecha o método index no sítio certo!
+    }
 
     /**
      * Show the form for creating a new resource.

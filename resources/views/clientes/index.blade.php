@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-black text-2xl text-gray-900 dark:text-white tracking-tight uppercase">
-                👥 Base de Clientes
+                👥 Base de Clientes @if($filtro === 'ativos') (Ativos) @elseif($filtro === 'inativos') (Sem Compras) @endif
             </h2>
             <a href="{{ route('clientes.create') }}" class="inline-flex items-center px-6 py-3 bg-red-700 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-wider hover:bg-red-800 transition duration-150 shadow-md">
                 + Adicionar Cliente
@@ -19,38 +19,49 @@
             </div>
             @endif
 
+            @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 shadow-sm">
+                {{ session('error') }}
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between">
+                <a href="{{ route('clientes.index') }}" class="block bg-gray-800 border rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 {{ empty($filtro) ? 'border-blue-500 scale-[1.01]' : 'border-gray-700 hover:border-gray-500' }}">
                     <div>
                         <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Total de Clientes</span>
                         <h3 class="text-2xl font-black text-white mt-1">{{ $totalClientes ?? 0 }}</h3>
                         <p class="text-[11px] text-gray-500 mt-0.5">Registados no sistema</p>
                     </div>
                     <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">👥</span>
-                </div>
+                </a>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 hover:border-blue-500">
+                <a href="{{ route('clientes.index', ['filtro' => 'ativos']) }}" class="block bg-gray-800 border rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 {{ $filtro === 'ativos' ? 'border-purple-500 scale-[1.01]' : 'border-gray-700 hover:border-purple-500/50' }}">
                     <div>
-                        <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Com Compras</span>
-                        <h3 class="text-2xl font-black text-blue-400 mt-1">{{ $clientesComCompras ?? 0 }}</h3>
-                        <p class="text-[11px] text-gray-500 mt-0.5">Clientes com escrituras assinadas</p>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Clientes Ativos</span>
+                        <h3 class="text-2xl font-black text-purple-400 mt-1">{{ $clientesComCompras ?? 0 }}</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Com escrituras assinadas</p>
                     </div>
                     <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">🛍️</span>
-                </div>
+                </a>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 hover:border-yellow-600">
+                <a href="{{ route('clientes.index', ['filtro' => 'inativos']) }}" class="block bg-gray-800 border rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 {{ $filtro === 'inativos' ? 'border-yellow-600 scale-[1.01]' : 'border-gray-700 hover:border-yellow-600/50' }}">
                     <div>
                         <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Sem Compras</span>
                         <h3 class="text-2xl font-black text-yellow-500 mt-1">{{ $clientesSemCompras ?? 0 }}</h3>
                         <p class="text-[11px] text-gray-500 mt-0.5">Ainda em fase de prospeção</p>
                     </div>
                     <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">⏳</span>
-                </div>
+                </a>
 
             </div>
+
             <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-md border border-gray-700">
                 <form action="{{ route('clientes.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
+                    @if(!empty($filtro))
+                        <input type="hidden" name="filtro" value="{{ $filtro }}">
+                    @endif
+
                     <div class="flex-1 w-full">
                         <label class="block text-gray-400 text-sm font-medium mb-1">Pesquisar Cliente</label>
                         <input type="text" name="search" value="{{ $pesquisa ?? '' }}"
