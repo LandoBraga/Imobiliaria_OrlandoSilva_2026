@@ -4,9 +4,10 @@
             <h2 class="font-black text-2xl text-gray-900 dark:text-white tracking-tight uppercase">
                 🏢 CESAE IMOBILIÁRIA <span class="text-sm font-normal text-gray-500 lowercase">| painel de controlo</span>
             </h2>
-            <span class="bg-red-700 text-white font-bold text-xs uppercase px-3 py-1.5 rounded-lg tracking-wider shadow-sm">
-                Modo Operacional
-            </span>
+            <div class="flex items-center gap-2 bg-gray-800 border border-gray-700 text-gray-300 font-bold text-xs uppercase px-3 py-1.5 rounded-lg tracking-wider shadow-sm">
+    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+    Modo Operacional
+</div>
         </div>
     </x-slot>
 

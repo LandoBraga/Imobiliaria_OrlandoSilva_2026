@@ -12,11 +12,11 @@
 
     <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 shadow-sm font-medium">
-                    {{ session('success') }}
-                </div>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 shadow-sm font-medium">
+                {{ session('success') }}
+            </div>
             @endif
 
             <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-700">
@@ -33,30 +33,31 @@
                     </thead>
                     <tbody class="divide-y divide-gray-700">
                         @forelse($vendas as $venda)
-                            <tr class="hover:bg-gray-750 transition duration-150">
-                                <td class="p-4 font-semibold text-gray-400">#{{ $venda->id }}</td>
-                                <td class="p-4 font-medium text-gray-200 uppercase">{{ $venda->cliente->nome }}</td>
-                                <td class="p-4 text-blue-400 font-bold">
-                                    {{ $venda->apartamento->referencia }} ({{ $venda->apartamento->tipologia }})
-                                </td>
-                                <td class="p-4 text-gray-300">
-                                    {{ \Carbon\Carbon::parse($venda->data_venda)->format('d/m/Y') }}
-                                </td>
-                                <td class="p-4 font-bold text-green-400">
-                                    € {{ number_format($venda->valor_venda, 2, ',', '.') }}
-                                </td>
-                                <td class="p-4 text-center">
-                                    <a href="{{ route('vendas.show', $venda->id) }}" class="text-blue-400 hover:text-blue-300 font-bold uppercase text-xs tracking-wider transition duration-150 hover:underline">
-                                        Ver Detalhes
-                                    </a>
-                                </td>
-                            </tr>
+                        <tr class="hover:bg-gray-750 transition duration-150">
+                            <td class="p-4 font-semibold text-gray-400">#{{ $venda->id }}</td>
+                            <td class="p-4 font-medium text-gray-200 uppercase">{{ $venda->cliente->nome }}</td>
+                            <td class="p-4 text-blue-400 font-bold">
+                                {{ $venda->apartamento->referencia }} ({{ $venda->apartamento->tipologia }})
+                            </td>
+                            <td class="p-4 text-gray-300">
+                                {{ \Carbon\Carbon::parse($venda->data_venda)->format('d/m/Y') }}
+                            </td>
+                            <td class="p-4 font-bold text-green-400">
+                                € {{ number_format($venda->valor_venda, 2, ',', '.') }}
+                            </td>
+                            <td class="p-4 text-center">
+                                <a href="{{ route('vendas.show', $venda->id) }}"
+                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600/20 border border-blue-500/40 rounded-md font-bold text-[10px] text-blue-400 uppercase tracking-wider hover:bg-blue-600 hover:text-white transition duration-150 shadow-sm">
+                                    Ver Detalhes
+                                </a>
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
-                                    Nenhuma transação comercial registada no sistema.
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
+                                Nenhuma transação comercial registada no sistema.
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>

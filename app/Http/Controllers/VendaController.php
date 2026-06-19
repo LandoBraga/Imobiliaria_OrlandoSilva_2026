@@ -29,38 +29,27 @@ class VendaController extends Controller
     // 3. Gravar a venda na Base de Dados
     public function store(Request $request)
     {
-        // Validação robusta dos campos vindos do formulário
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'apartamento_id' => 'required|exists:apartamentos,id,estado,Disponível',
-            'data_venda' => 'required|date',
+            'apartamento_id' => 'required|exists:apartamentos,id',
             'valor_venda' => 'required|numeric|min:0',
-            'observacoes' => 'nullable|string',
+            'data_venda' => 'required|date',
         ]);
 
-        // Executa a gravação e a alteração de estado em segurança
         DB::transaction(function () use ($request) {
-            Venda::create([
-                'cliente_id'     => $request->cliente_id,
-                'apartamento_id' => $request->apartamento_id,
-                'data_venda'     => $request->data_venda,
-                'valor_venda'    => $request->valor_venda,
-                'observacoes'    => $request->observacoes,
-            ]);
-
-            $apartamento = Apartamento::find($request->apartamento_id);
-            $apartamento->update(['estado' => 'Vendido']);
+            $venda = Venda::create($request->all());
+            $venda->apartamento->update(['estado' => 'Vendido']);
         });
 
-        // Força o redirecionamento explícito para a lista de histórico com mensagem de sucesso
-        return redirect()->route('vendas.index')->with('success', 'Venda registada com sucesso! O estado do apartamento foi alterado para Vendido.');
+        return redirect()->route('vendas.index')->with('success', 'Venda registada com sucesso!');
+    }
 
-        public function show($id)
-{
-    // Carrega a venda com o cliente e o apartamento associados
-    $venda = \App\Models\Venda::with(['cliente', 'apartamento'])->findOrFail($id);
+    // 4. Mostrar os detalhes de uma venda específica
+    public function show($id)
+    {
+        // Carrega a venda com o cliente e o apartamento associados
+        $venda = Venda::with(['cliente', 'apartamento'])->findOrFail($id);
 
-    return view('vendas.show', compact('venda'));
-}
+        return view('vendas.show', compact('venda'));
     }
 }

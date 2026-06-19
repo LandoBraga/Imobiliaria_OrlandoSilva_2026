@@ -12,15 +12,15 @@
 
     <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 shadow-sm">
-                    {{ session('success') }}
-                </div>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 shadow-sm">
+                {{ session('success') }}
+            </div>
             @endif
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-                
+
                 <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between">
                     <div>
                         <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Total de Clientes</span>
@@ -53,9 +53,9 @@
                 <form action="{{ route('clientes.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
                     <div class="flex-1 w-full">
                         <label class="block text-gray-400 text-sm font-medium mb-1">Pesquisar Cliente</label>
-                        <input type="text" name="search" value="{{ $pesquisa ?? '' }}" 
-                               placeholder="Pesquise por nome ou NIF do cliente..." 
-                               class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 text-sm">
+                        <input type="text" name="search" value="{{ $pesquisa ?? '' }}"
+                            placeholder="Pesquise por nome ou NIF do cliente..."
+                            class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 text-sm">
                     </div>
                     <div class="flex gap-2 w-full md:w-auto">
                         <button type="submit" class="w-full md:w-auto bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2.5 rounded-lg text-sm transition duration-150 shadow">
@@ -82,36 +82,40 @@
                     </thead>
                     <tbody class="divide-y divide-gray-700">
                         @forelse($clientes as $cliente)
-                            <tr class="hover:bg-gray-750 transition duration-150">
-                                <td class="p-4 font-bold text-gray-100 uppercase">{{ $cliente->nome }}</td>
-                                <td class="p-4 text-gray-300">{{ $cliente->email }}</td>
-                                <td class="p-4 text-gray-300">{{ $cliente->telefone }}</td>
-                                <td class="p-4 font-mono font-semibold text-gray-200">{{ $cliente->nif }}</td>
-                                <td class="p-4 text-gray-400">{{ $cliente->morada }}</td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-4">
-                                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="text-blue-400 hover:text-blue-300 font-bold uppercase text-xs tracking-wider transition duration-150 hover:underline">
-                                            Editar
-                                        </a>
+                        <tr class="hover:bg-gray-750 transition duration-150">
+                            <td class="p-4 font-bold text-gray-100 uppercase">{{ $cliente->nome }}</td>
+                            <td class="p-4 text-gray-300">{{ $cliente->email }}</td>
+                            <td class="p-4 text-gray-300">{{ $cliente->telefone }}</td>
+                            <td class="p-4 font-mono font-semibold text-gray-200">{{ $cliente->nif }}</td>
+                            <td class="p-4 text-gray-400">{{ $cliente->morada }}</td>
+                            <td class="p-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
 
-                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" 
-                                              onsubmit="return confirm('Tem a certeza absoluta que deseja eliminar este cliente? Esta ação não pode ser desfeita.');"
-                                              class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-400 hover:text-red-300 font-bold uppercase text-xs tracking-wider transition duration-150 hover:underline">
-                                                Eliminar
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <a href="{{ route('clientes.edit', $cliente->id) }}"
+                                        class="inline-flex items-center px-3 py-1.5 bg-blue-600/20 border border-blue-500/40 rounded-md font-bold text-[10px] text-blue-400 uppercase tracking-wider hover:bg-blue-600 hover:text-white transition duration-150 shadow-sm">
+                                        Editar
+                                    </a>
+
+                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
+                                        onsubmit="return confirm('Tem a certeza absoluta que deseja eliminar este cliente?');"
+                                        class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 bg-red-700/20 border border-red-500/40 rounded-md font-bold text-[10px] text-red-400 uppercase tracking-wider hover:bg-red-700 hover:text-white transition duration-150 shadow-sm">
+                                            Eliminar
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
                         @empty
-                            <tr>
-                                <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
-                                    Nenhum cliente encontrado com os filtros selecionados.
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
+                                Nenhum cliente encontrado com os filtros selecionados.
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -12,9 +12,9 @@
 
     <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen text-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                
+
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md flex flex-col items-center text-center">
                     <div class="bg-green-900/30 text-green-400 w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-4 border border-green-700">
                         🤝
@@ -24,7 +24,7 @@
                     </span>
                     <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Data da Escritura</p>
                     <p class="text-sm font-bold text-gray-200 mb-4">{{ \Carbon\Carbon::parse($venda->data_venda)->format('d/m/Y') }}</p>
-                    
+
                     <div class="w-full bg-gray-900 p-4 rounded-lg border border-gray-700 my-2">
                         <span class="block text-xs text-gray-400 uppercase font-medium mb-1">Valor do Negócio</span>
                         <h3 class="text-3xl font-black text-green-400">
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="lg:col-span-2 grid grid-cols-1 gap-6">
-                    
+
                     <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
                         <h4 class="text-sm font-black uppercase tracking-wider text-blue-400 mb-4 flex items-center gap-2">
                             👤 Informação do Cliente Comprador
@@ -65,9 +65,9 @@
                         </h4>
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="w-full md:w-1/3">
-                                <img src="{{ $venda->apartamento->imagem_url }}" 
-                                     class="w-full h-40 object-cover rounded-lg shadow-md border border-gray-600" 
-                                     alt="Foto do Imóvel">
+                                <img src="{{ $venda->apartamento->imagem_url }}"
+                                    class="w-full h-40 object-cover rounded-lg shadow-md border border-gray-600"
+                                    alt="Foto do Imóvel">
                             </div>
                             <div class="flex-1 grid grid-cols-2 gap-4 bg-gray-900 p-4 rounded-lg border border-gray-700">
                                 <div>

@@ -3,151 +3,110 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-   public function index(\Illuminate\Http\Request $request)
-{
-    // Captura o termo de pesquisa digitado pelo utilizador
-    $pesquisa = $request->input('search');
-
-    // Inicia a query na tabela de clientes
-    $query = \App\Models\Cliente::query();
-
-    // Se houver pesquisa, filtra por Nome ou por NIF
-    if ($pesquisa) {
-        $query->where('nome', 'like', "%{$pesquisa}%")
-              ->orWhere('nif', 'like', "%{$pesquisa}%");
-    }
-
-    // Ordena por ordem alfabética de nome
-    $clientes = $query->orderBy('nome', 'asc')->get();
-
     public function index(Request $request)
-{
-    $pesquisa = $request->get('search');
+    {
+        // Captura o termo de pesquisa digitado pelo utilizador
+        $pesquisa = $request->input('search');
 
-    // Query base para a listagem
-    $query = \App\Models\Cliente::query();
+        // Inicia a query na tabela de clientes
+        $query = Cliente::query();
 
-    if ($pesquisa) {
-        $query->where('nome', 'LIKE', "%{$pesquisa}%")
-              ->orWhere('nif', 'LIKE', "%{$pesquisa}%");
-    }
+        // Se houver pesquisa, filtra por Nome ou por NIF
+        if ($pesquisa) {
+            $query->where('nome', 'like', "%{$pesquisa}%")
+                ->orWhere('nif', 'like', "%{$pesquisa}%");
+        }
 
-    $clientes = $query->get();
+        // Ordena por ordem alfabética de nome
+        $clientes = $query->orderBy('nome', 'asc')->get();
 
-    // =======================================================================
-    // NOVOS CÁLCULOS PARA OS CARTÕES 
-    // =======================================================================
-    $totalClientes = \App\Models\Cliente::count();
-    
-    // Conta clientes que têm relação na tabela de vendas
-    $clientesComCompras = \App\Models\Cliente::has('vendas')->count(); 
-    
-    // Conta clientes que não têm nenhuma venda associada
-    $clientesSemCompras = \App\Models\Cliente::doesntHave('vendas')->count();
-    // =======================================================================
+        // Novos cálculos para os cartões dinâmicos (Inspirados no UrbanMotors)
+        $totalClientes = Cliente::count();
+        $clientesComCompras = Cliente::has('vendas')->count();
+        $clientesSemCompras = Cliente::doesntHave('vendas')->count();
 
-    return view('clientes.index', compact(
-        'clientes', 
-        'pesquisa', 
-        'totalClientes', 
-        'clientesComCompras', 
-        'clientesSemCompras'
-    ));
-}
-
-    // Envia os dados para a view mantendo a variável de pesquisa ativa
-    return view('clientes.index', compact('clientes', 'pesquisa'));
-}
+        // Envia os dados e os contadores para a view
+        return view('clientes.index', compact(
+            'clientes',
+            'pesquisa',
+            'totalClientes',
+            'clientesComCompras',
+            'clientesSemCompras'
+        ));
+    } // <--- Fecha o método index no sítio certo!
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-{
-    // Abre a página com o formulário de criação
-    return view('clientes.create');
-}
+    {
+        return view('clientes.create');
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(\Illuminate\Http\Request $request)
-{
-    // 1. Validação profissional dos dados introduzidos
-    $validated = $request->validate([
-        'nome' => 'required|string|max:255',
-        'email' => 'required|email|unique:clientes,email',
-        'telefone' => 'nullable|string|max:20',
-        'morada' => 'required|string|max:255',
-        'nif' => 'required|string|size:9|unique:clientes,nif',
-    ]);
-
-    // 2. Cria o cliente na base de dados usando o Model
-    \App\Models\Cliente::create($validated);
-
-    // 3. Redireciona de volta para a lista com mensagem de sucesso
-    return redirect()->route('clientes.index')->with('success', 'Cliente adicionado com sucesso!');
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email|unique:clientes,email',
+            'telefone' => 'nullable|string|max:20',
+            'morada' => 'required|string|max:255',
+            'nif' => 'required|string|size:9|unique:clientes,nif',
+        ]);
+
+        Cliente::create($validated);
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente adicionado com sucesso!');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    // Mostrar o formulário com os dados do cliente para editar
-public function edit(Cliente $cliente)
-{
-    return view('clientes.edit', compact('cliente'));
-}
+    public function edit(Cliente $cliente)
+    {
+        return view('clientes.edit', compact('cliente'));
+    }
 
-// Gravar as alterações feitas no formulário na Base de Dados
-public function update(\Illuminate\Http\Request $request, Cliente $cliente)
-{
-    // Validação dos dados (garante que o NIF único ignora o ID do próprio cliente atual)
-    $request->validate([
-        'nome'     => 'required|string|max:255',
-        'email'    => 'required|email|max:255|unique:clientes,email,' . $cliente->id,
-        'telefone' => 'required|string|max:20',
-        'nif'      => 'required|digits:9|unique:clientes,nif,' . $cliente->id,
-        'morada'   => 'required|string|max:255',
-    ]);
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Cliente $cliente)
+    {
+        $request->validate([
+            'nome'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255|unique:clientes,email,' . $cliente->id,
+            'telefone' => 'required|string|max:20',
+            'nif'      => 'required|digits:9|unique:clientes,nif,' . $cliente->id,
+            'morada'   => 'required|string|max:255',
+        ]);
 
-    // Atualiza os dados na base de dados
-    $cliente->update($request->all());
+        $cliente->update($request->all());
 
-    // Redireciona de volta para a lista com mensagem de sucesso
-    return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
-}
+        return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
-    // 1. Localiza o cliente pelo ID na base de dados
-    $cliente = \App\Models\Cliente::findOrFail($id);
+    {
+        $cliente = Cliente::findOrFail($id);
 
-    // 2. Bloqueia a eliminação se houver histórico de vendas
-    if ($cliente->vendas()->exists()) {
-        return redirect()->back()->with('error', 'Não pode apagar um cliente com histórico de compras!');
+        if ($cliente->vendas()->exists()) {
+            return redirect()->back()->with('error', 'Não pode apagar um cliente com histórico de compras!');
+        }
+
+        $cliente->delete();
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso!');
     }
-
-    // 3. Se passou na validação, apaga o registo com segurança
-    $cliente->delete();
-
-    return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso!');
 }
-}
-
