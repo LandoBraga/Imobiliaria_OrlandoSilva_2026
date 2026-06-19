@@ -11,18 +11,22 @@ class ApartamentoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+   public function index(Request $request)
     {
-        // Captura os valores que o utilizador vai digitar ou clicar no ecrã
+        // Captura os filtros e parâmetros da URL
         $pesquisa  = $request->input('search');
         $tipologia = $request->input('tipologia');
-        $ordenar   = $request->input('order_by', 'id'); // Sincronizado com a View
-        $direcao   = $request->input('order_direction', 'asc'); // Sincronizado com a View
+        $ordenar   = $request->input('order_by', 'id');
+        $direcao   = $request->input('order_direction', 'asc');
+        
+        // Novos parâmetros para os cartões clicáveis
+        $estado    = $request->input('estado'); 
+        $layout    = $request->input('layout', 'table'); // 'table' por omissão, ou 'grid'
 
-        // Inicia a query na tabela de apartamentos
+        // Inicia a query
         $query = Apartamento::query();
 
-        // Filtro 1: Barra de Pesquisa (pesquisa por Referência ou Morada)
+        // Filtro por Barra de Pesquisa
         if ($pesquisa) {
             $query->where(function ($q) use ($pesquisa) {
                 $q->where('referencia', 'like', "%{$pesquisa}%")
@@ -30,22 +34,28 @@ class ApartamentoController extends Controller
             });
         }
 
-        // Filtro 2: Seleção de Tipologia (T0, T1, T2...)
+        // Filtro por Tipologia
         if ($tipologia) {
             $query->where('tipologia', $tipologia);
         }
 
-        // Ordenação dinâmica e segura
+        // NOVO: Filtro automático por Estado (Disponível ou Vendido) vindo do Dashboard
+        if ($estado) {
+            $query->where('estado', $estado);
+        }
+
+        // Ordenação dinâmica
         $colunasPermitidas = ['id', 'tipologia', 'area', 'preco'];
         if (in_array($ordenar, $colunasPermitidas)) {
             $query->orderBy($ordenar, $direcao);
         }
 
-        // Executa a query final
         $apartamentos = $query->get();
 
-        // Devolve os dados para a view, mantendo os filtros ativos no ecrã
-        return view('apartamentos.index', compact('apartamentos', 'pesquisa', 'tipologia', 'ordenar', 'direcao'));
+        // Passa todas as variáveis para a View, incluindo o layout e o estado
+        return view('apartamentos.index', compact(
+            'apartamentos', 'pesquisa', 'tipologia', 'ordenar', 'direcao', 'estado', 'layout'
+        ));
     }
 
     /**
