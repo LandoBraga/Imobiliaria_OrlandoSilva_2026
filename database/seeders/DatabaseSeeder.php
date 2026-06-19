@@ -18,5 +18,11 @@ class DatabaseSeeder extends Seeder
 
         // Cria 20 apartamentos fictícios na base de dados
         Apartamento::factory(20)->create();
+
+        \App\Models\User::factory()->create([
+    'name' => 'Formador Rui Guerra',
+    'email' => 'formador@cesae.pt',
+    'password' => bcrypt('password123'),
+]);
     }
 }

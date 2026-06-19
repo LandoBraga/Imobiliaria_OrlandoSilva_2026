@@ -11,7 +11,25 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // 1. Contagens rápidas da base de dados
+    $totalClientes = \App\Models\Cliente::count();
+    $totalImoveis = \App\Models\Apartamento::count();
+    
+    // 2. Estados dos imóveis
+    $imoveisDisponiveis = \App\Models\Apartamento::where('estado', 'Disponível')->count();
+    $imoveisVendidos = \App\Models\Apartamento::where('estado', 'Vendido')->count();
+
+    // 3. Faturação total acumulada
+    $faturacaoTotal = \App\Models\Venda::sum('valor_venda');
+
+    // Envia tudo para a view do dashboard
+    return view('dashboard', compact(
+        'totalClientes', 
+        'totalImoveis', 
+        'imoveisDisponiveis', 
+        'imoveisVendidos', 
+        'faturacaoTotal'
+    ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Bloco de rotas protegidas por login
