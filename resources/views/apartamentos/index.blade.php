@@ -27,7 +27,7 @@
                         <label class="block text-gray-400 text-sm font-medium mb-1">Tipologia</label>
                         <select name="tipologia" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-red-500 text-sm">
                             <option value="">Todas</option>
-                            @foreach(['T0', 'T1', 'T2', 'T3', 'T4'] as $tipo)
+                            @foreach(['T0', 'T1', 'T2', 'T3', 'T4', 'T5'] as $tipo)
                             <option value="{{ $tipo }}" {{ request('tipologia') == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
                             @endforeach
                         </select>
@@ -64,44 +64,74 @@
                 <table class="w-full text-left border-collapse text-white text-sm">
                     <thead>
                         <tr class="bg-gray-900 text-gray-400 uppercase text-xs font-semibold tracking-wider border-b border-gray-700">
-                            <th class="p-4">Visual</th>
+                            <th class="p-4 w-20">Visual</th>
                             <th class="p-4">Referência</th>
                             <th class="p-4">Tipologia</th>
                             <th class="p-4">Localização (Morada)</th>
                             <th class="p-4">Área Útil</th>
                             <th class="p-4 text-right">Preço Base</th>
                             <th class="p-4 text-center">Estado</th>
+                            <th class="p-4 text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-700">
                         @forelse($apartamentos as $apartamento)
-                        <tr class="hover:bg-gray-750 transition duration-150">
-                            <td class="p-4">
-                                <img src="{{ $apartamento->imagem_url }}"
-                                    class="w-14 h-14 object-cover rounded-lg shadow-md border border-gray-600 transition duration-200 transform hover:scale-105"
-                                    alt="Foto Imóvel">
+                        <tr class="hover:bg-gray-750 transition duration-150 border-b border-gray-700">
+
+                            <td class="p-4 {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                <img src="{{ $apartamento->imagem_url ?? asset('images/default-imovel.png') }}"
+                                    alt="Imóvel" class="w-12 h-12 object-cover rounded-lg border border-gray-700 shadow-sm">
                             </td>
-                            <td class="p-4 font-mono font-bold text-gray-200 uppercase">{{ $apartamento->referencia }}</td>
-                            <td class="p-4 font-semibold text-red-400">{{ $apartamento->tipologia }}</td>
-                            <td class="p-4 text-gray-300">{{ $apartamento->morada }}</td>
-                            <td class="p-4 text-gray-300 font-medium">{{ $apartamento->area }} m²</td>
-                            <td class="p-4 text-right text-gray-100 font-bold">€ {{ number_format($apartamento->preco, 2, ',', '.') }}</td>
+
+                            <td class="p-4 font-bold text-gray-150 {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                {{ $apartamento->referencia }}
+                            </td>
+
+                            <td class="p-4 {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                <span class="text-red-400 font-bold">{{ $apartamento->tipologia }}</span>
+                            </td>
+
+                            <td class="p-4 text-gray-400 {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                {{ $apartamento->morada }}
+                            </td>
+
+                            <td class="p-4 text-gray-300 {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                {{ $apartamento->area }} m²
+                            </td>
+
+                            <td class="p-4 text-right text-gray-100 font-black {{ $apartamento->estado === 'Vendido' ? 'opacity-40' : '' }}">
+                                € {{ number_format($apartamento->preco, 2, ',', '.') }}
+                            </td>
+
                             <td class="p-4 text-center">
-                                @if($apartamento->estado === 'Disponível')
-                                <span class="px-3 py-1 text-xs font-black uppercase tracking-wider rounded-full bg-green-900 text-green-300 border border-green-700">
-                                    Disponível
-                                </span>
-                                @else
-                                <span class="px-3 py-1 text-xs font-black uppercase tracking-wider rounded-full bg-gray-700 text-gray-300 border border-gray-600">
-                                    Vendido
-                                </span>
-                                @endif
+                                <div class="flex items-center justify-center">
+                                    @if($apartamento->estado === 'Disponível')
+                                    <span class="inline-flex items-center gap-1.5 text-green-400 font-bold text-xs uppercase tracking-wider">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        Disponível
+                                    </span>
+                                    @else
+                                    <span class="inline-flex items-center gap-1.5 text-red-500 font-black text-xs uppercase tracking-wider border border-red-900/30 bg-red-950/20 px-2.5 py-1 rounded-md">
+                                        <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                                        Vendido
+                                    </span>
+                                    @endif
+                                </div>
+                            </td>
+
+                            <td class="p-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('apartamentos.edit', $apartamento->id) }}"
+                                        class="px-2.5 py-1.5 bg-blue-600/20 border border-blue-500/40 rounded-md font-bold text-[10px] text-blue-400 uppercase tracking-wider hover:bg-blue-600 hover:text-white transition duration-150">
+                                        Editar
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-gray-400 bg-gray-800">
-                                Nenhum imóvel encontrado com as definições de pesquisa atuais.
+                            <td colspan="8" class="p-8 text-center text-gray-400 bg-gray-800">
+                                Nenhum imóvel encontrado com os critérios selecionados.
                             </td>
                         </tr>
                         @endforelse
