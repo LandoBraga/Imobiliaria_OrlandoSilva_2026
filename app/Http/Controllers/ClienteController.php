@@ -26,6 +26,41 @@ class ClienteController extends Controller
     // Ordena por ordem alfabética de nome
     $clientes = $query->orderBy('nome', 'asc')->get();
 
+    public function index(Request $request)
+{
+    $pesquisa = $request->get('search');
+
+    // Query base para a listagem
+    $query = \App\Models\Cliente::query();
+
+    if ($pesquisa) {
+        $query->where('nome', 'LIKE', "%{$pesquisa}%")
+              ->orWhere('nif', 'LIKE', "%{$pesquisa}%");
+    }
+
+    $clientes = $query->get();
+
+    // =======================================================================
+    // NOVOS CÁLCULOS PARA OS CARTÕES 
+    // =======================================================================
+    $totalClientes = \App\Models\Cliente::count();
+    
+    // Conta clientes que têm relação na tabela de vendas
+    $clientesComCompras = \App\Models\Cliente::has('vendas')->count(); 
+    
+    // Conta clientes que não têm nenhuma venda associada
+    $clientesSemCompras = \App\Models\Cliente::doesntHave('vendas')->count();
+    // =======================================================================
+
+    return view('clientes.index', compact(
+        'clientes', 
+        'pesquisa', 
+        'totalClientes', 
+        'clientesComCompras', 
+        'clientesSemCompras'
+    ));
+}
+
     // Envia os dados para a view mantendo a variável de pesquisa ativa
     return view('clientes.index', compact('clientes', 'pesquisa'));
 }

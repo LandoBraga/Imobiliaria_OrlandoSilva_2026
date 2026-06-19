@@ -28,6 +28,7 @@
                             <th class="p-4">Apartamento (Ref)</th>
                             <th class="p-4">Data da Venda</th>
                             <th class="p-4">Preço Final</th>
+                            <th class="p-4 text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-700">
@@ -44,10 +45,15 @@
                                 <td class="p-4 font-bold text-green-400">
                                     € {{ number_format($venda->valor_venda, 2, ',', '.') }}
                                 </td>
+                                <td class="p-4 text-center">
+                                    <a href="{{ route('vendas.show', $venda->id) }}" class="text-blue-400 hover:text-blue-300 font-bold uppercase text-xs tracking-wider transition duration-150 hover:underline">
+                                        Ver Detalhes
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-8 text-center text-gray-400 bg-gray-800">
+                                <td colspan="6" class="p-8 text-center text-gray-400 bg-gray-800">
                                     Nenhuma transação comercial registada no sistema.
                                 </td>
                             </tr>

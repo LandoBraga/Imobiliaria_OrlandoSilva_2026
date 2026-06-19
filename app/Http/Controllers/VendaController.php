@@ -54,5 +54,13 @@ class VendaController extends Controller
 
         // Força o redirecionamento explícito para a lista de histórico com mensagem de sucesso
         return redirect()->route('vendas.index')->with('success', 'Venda registada com sucesso! O estado do apartamento foi alterado para Vendido.');
+
+        public function show($id)
+{
+    // Carrega a venda com o cliente e o apartamento associados
+    $venda = \App\Models\Venda::with(['cliente', 'apartamento'])->findOrFail($id);
+
+    return view('vendas.show', compact('venda'));
+}
     }
 }

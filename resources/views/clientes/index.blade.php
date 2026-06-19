@@ -19,6 +19,36 @@
                 </div>
             @endif
 
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+                
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between">
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Total de Clientes</span>
+                        <h3 class="text-2xl font-black text-white mt-1">{{ $totalClientes ?? 0 }}</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Registados no sistema</p>
+                    </div>
+                    <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">👥</span>
+                </div>
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 hover:border-blue-500">
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Com Compras</span>
+                        <h3 class="text-2xl font-black text-blue-400 mt-1">{{ $clientesComCompras ?? 0 }}</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Clientes com escrituras assinadas</p>
+                    </div>
+                    <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">🛍️</span>
+                </div>
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-md flex items-center justify-between transition duration-150 hover:border-yellow-600">
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-gray-400">Sem Compras</span>
+                        <h3 class="text-2xl font-black text-yellow-500 mt-1">{{ $clientesSemCompras ?? 0 }}</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Ainda em fase de prospeção</p>
+                    </div>
+                    <span class="text-xl bg-gray-900 p-3 rounded-lg border border-gray-750">⏳</span>
+                </div>
+
+            </div>
             <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-md border border-gray-700">
                 <form action="{{ route('clientes.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
                     <div class="flex-1 w-full">
