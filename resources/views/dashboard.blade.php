@@ -20,7 +20,7 @@
                         <div>
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-wider group-hover:text-yellow-400 transition">Faturação Total</p>
                             <h3 class="text-2xl font-black text-white mt-2">€ 1.727.000,00</h3>
-                            <p class="text-[10px] text-gray-500 mt-2">Clique para ver as metas da agência</p>
+                            <p class="text-[10px] text-gray-400 mt-2">Clique para ver as metas da agência</p>
                         </div>
                         <span class="text-xl p-2 bg-yellow-600/10 rounded-lg text-yellow-500">💰</span>
                     </div>
@@ -31,7 +31,7 @@
                         <div>
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-wider group-hover:text-purple-400 transition">Clientes Ativos</p>
                             <h3 class="text-2xl font-black text-white mt-2">3</h3>
-                            <p class="text-[10px] text-gray-500 mt-2">Compradores com escrituras assinadas</p>
+                            <p class="text-[10px] text-gray-400 mt-2">Compradores com escrituras assinadas</p>
                         </div>
                         <span class="text-xl p-2 bg-purple-600/10 rounded-lg text-purple-500">👥</span>
                     </div>
@@ -42,7 +42,7 @@
                         <div>
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-wider group-hover:text-green-400 transition">Stock Disponível</p>
                             <h3 class="text-2xl font-black text-white mt-2">35 <span class="text-xs text-gray-500 font-normal">/ 40</span></h3>
-                            <p class="text-[10px] text-gray-500 mt-2">Apartamentos ativos no mercado</p>
+                            <p class="text-[10px] text-gray-400 mt-2">Apartamentos ativos no mercado</p>
                         </div>
                         <span class="text-xl p-2 bg-green-600/10 rounded-lg text-green-500">🏢</span>
                     </div>
@@ -53,7 +53,7 @@
                         <div>
                             <p class="text-xs text-gray-400 font-bold uppercase tracking-wider group-hover:text-blue-400 transition">Imóveis Vendidos</p>
                             <h3 class="text-2xl font-black text-white mt-2">5</h3>
-                            <p class="text-[10px] text-gray-500 mt-2">Transações concluídas com sucesso</p>
+                            <p class="text-[10px] text-gray-400 mt-2">Transações concluídas com sucesso</p>
                         </div>
                         <span class="text-xl p-2 bg-blue-600/10 rounded-lg text-blue-500">✅</span>
                     </div>
