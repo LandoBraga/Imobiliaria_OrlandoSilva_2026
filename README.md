@@ -1,59 +1,49 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏢 Plataforma Digital de Gestão Imobiliária - CESAE
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plataforma Web para gestão integrada de stock imobiliário, angariação de clientes e faturação analítica, desenvolvida como projeto de avaliação final no ecossistema **Laravel 11**, **PHP** e **MySQL**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📑 Matriz de Conformidade de Requisitos (CESAE)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O sistema cumpre com rigor todos os critérios obrigatórios estabelecidos no enunciado de avaliação:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Requisito de Avaliação | Componente Laravel | Descrição da Implementação | Estado |
+| :--- | :--- | :--- | :---: |
+| **CRUD Completo** | `Models`, `Controllers` & `Blade` | Gestão total (Criar, Ler, Editar, Eliminar) para Clientes, Apartamentos e Vendas. | ✅ |
+| **Arquitetura Estrutural** | `MVC` Pattern & `Migrations` | Base de dados MySQL gerada por Migrations. Views isoladas com Blade e Vite. | ✅ |
+| **Validação de Formulários** | HTTP Requests / `validate()` | Proteção contra dados nulos, formatos inválidos e validação exclusiva de NIF/Email. | ✅ |
+| **Upload de Fotografias** | Storage System | Upload seguro via `multipart/form-data` guardado em `storage/app/public/apartamentos`. | ✅ |
+| **Pesquisa e Ordenação** | Eloquent Queries Dinâmicas | Filtros em tempo real por tipologia, limites de preço e ordenações ascendentes/descendentes. | ✅ |
+| **Mensagens de Feedback** | Blade Sessions | Alertas visuais estilizados injetados no topo das listagens após operações com sucesso. | ✅ |
+| **Bloqueio de Duplicação** | Backend Validation Logic | Restrição lógica que impede a venda ou edição de imóveis já marcados como "Vendido". | ✅ |
+| **Massa de Dados de Teste** | Database `Seeders` & `Factories` | Alimentação automática de tabelas com dados realistas usando o componente `Faker`. | ✅ |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Otimizações Visuais & Engenharia de Interface (UX/UI)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Para além dos requisitos obrigatórios, foram integradas melhorias avançadas de usabilidade:
 
-## Laravel Sponsors
+1. **Dashboard Analítico Dinâmico:** Incorporação da biblioteca *Chart.js* na página principal para plotagem de séries temporais do volume de negócios e faturação global.
+2. **Gamificação e Metas Corporativas:** Ao clicar no KPI de Faturação, é disparado um *Modal* nativo em Tailwind CSS (com efeito `backdrop-blur-sm`) que exibe a barra de progresso dos objetivos anuais da agência e o pódio dos melhores consultores.
+3. **Refatoração de Acessibilidade (A11y):** Correção do rácio de contraste nos cartões analíticos do Dashboard, elevando os textos de apoio para a classe `text-gray-400` para uma leitura confortável em ambientes escuros (*Dark Mode*).
+4. **Tratamento Condicional de Imóveis Vendidos:** Os ativos comercializados passam automaticamente para um estado visual esbatido (`opacity-35` e `mix-blend-luminosity`) e o controlo de edição é removido para garantir a proteção histórica dos dados.
+5. **Filtragem Cruzada de Clientes:** Implementação de cartões âncora clicáveis que intercetam parâmetros HTTP e segmentam instantaneamente os compradores em "Clientes Ativos" (`has('vendas')`) e "Em Prospeção" (`doesntHave('vendas')`).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Tecnologias Utilizadas
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* **Backend:** PHP 8.2+ / Laravel 11
+* **Frontend:** Blade Templates / Tailwind CSS / Vite
+* **Base de Dados:** MySQL
+* **Gráficos & Interatividade:** Chart.js / JavaScript Asíncrono
+* **Autenticação:** Laravel Breeze (`auth` middleware)
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 👥 Autoria
+* **Formando:** Orlando Silva
+* **Formador:** Rui Guerra
+* **Curso:** Desenvolvimento de Software / Aplicações Web - CESAE (2026)
